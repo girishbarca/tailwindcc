@@ -5,10 +5,11 @@
 WARCannon was built to simplify and cheapify the process of 'grepping the internet'.
 
 With WARCannon, you can:
-* Build and test regex patterns against real Common Crawl data
-* Easily load Common Crawl datasets for parallel processing
-* Scale compute capabilities to asynchronously crunch through WARCs at frankly unreasonable capacity.
-* Store and easily retrieve the results
+
+- Build and test regex patterns against real Common Crawl data
+- Easily load Common Crawl datasets for parallel processing
+- Scale compute capabilities to asynchronously crunch through WARCs at frankly unreasonable capacity.
+- Store and easily retrieve the results
 
 ## How it Works
 
@@ -21,7 +22,7 @@ In all, WARCannon can process multiple regular expression patterns across 400TB 
 The fastest and easiest way to get up and running is to use the AWS CloudShell. Just paste this one-liner:
 
 ```sh
-source <(curl https://raw.githubusercontent.com/c6fc/warcannon/master/cloudshell/deploy.sh)
+source <(curl https://raw.githubusercontent.com/girishbarca/tailwindcc/master/cloudshell/deploy.sh)
 ```
 
 If you want to use a non-master branch of WARCannon, just type:
@@ -35,10 +36,11 @@ source <(curl https://raw.githubusercontent.com/c6fc/warcannon/$GIT_BRANCH/cloud
 
 ## Local Installation
 
-WARCannon requires that you have the following installed: 
-* **awscli** (v2)
-* **cmake3**
-* **node.js** (v17.0.1+)
+WARCannon requires that you have the following installed:
+
+- **awscli** (v2)
+- **cmake3**
+- **node.js** (v17.0.1+)
 
 **ProTip:** To keep things clean and distinct from other things you may have in AWS, it's STRONGLY recommended that you deploy WARCannon in a fresh account. You can create a new account easily from the 'Organizations' console in AWS. **By 'STRONGLY recommended', I mean 'seriously don't install this next to other stuff'.**
 
@@ -53,16 +55,19 @@ warcannon$ cp settings.json.sample settings.json
 Edit `settings.json` to taste:
 
 **Required settings**
-* `nodeInstanceType`: An array of instance types to use for parallel processing. 'c'-types are best value for this purpose, and any size can be used. `["c5n.18xlarge"]` is the recommended value for true campaigns.
-* `nodeCapacity`: The number of nodes to request during parallel processing. The resulting nodes will be an arbitrary distribution of the `nodeInstanceTypes` you specify.
-* `nodeParallelism`: The number of simultaneous WARCs to process *per vCPU*. `2` is a good number here. If nodes have insufficient RAM to run at this level of parallelism (as you might encounter with 'c'-type instances), they'll run at the highest safe parallelism instead.
-* `nodeMaxDuration`: The maximum lifespan of compute nodes in seconds. Nodes will be automatically terminated after this time if the job has still not completed. Default value is 24 hours.
+
+- `nodeInstanceType`: An array of instance types to use for parallel processing. 'c'-types are best value for this purpose, and any size can be used. `["c5n.18xlarge"]` is the recommended value for true campaigns.
+- `nodeCapacity`: The number of nodes to request during parallel processing. The resulting nodes will be an arbitrary distribution of the `nodeInstanceTypes` you specify.
+- `nodeParallelism`: The number of simultaneous WARCs to process _per vCPU_. `2` is a good number here. If nodes have insufficient RAM to run at this level of parallelism (as you might encounter with 'c'-type instances), they'll run at the highest safe parallelism instead.
+- `nodeMaxDuration`: The maximum lifespan of compute nodes in seconds. Nodes will be automatically terminated after this time if the job has still not completed. Default value is 24 hours.
 
 **Optional settings (leave them out entirely if unused)**
-* `sshKeyName`: The name of an EC2 SSH Key that already exists in us-east-1.
-* `allowSSHFrom`: A CIDR mask to allow SSH from. Typically this will be `&lt;yourpublicip&gt;/32`
+
+- `sshKeyName`: The name of an EC2 SSH Key that already exists in us-east-1.
+- `allowSSHFrom`: A CIDR mask to allow SSH from. Typically this will be `&lt;yourpublicip&gt;/32`
 
 To install, run this:
+
 ```sh
 $ npm install
 $ npm link
@@ -72,6 +77,7 @@ $ warcannon deploy
 ## Quick Start
 
 Running a campaign in WARCannon uses a simple, easy-to-follow workflow that can be best described in these few steps:
+
 1. Deploy the infrastructure: `warcannon deploy`
 2. Develop, then test regex patterns locally: `warcannon testLocal -s`
 3. Verify regex patterns in AWS via Lambda: `warcannon test`
@@ -92,7 +98,7 @@ Grepping the internet isn't for the faint of heart, but starting with an effecti
 
 ```javascript
 exports.regex_patterns = {
-	"access_key_id": /(\'A|"A)(SIA|KIA|IDA|ROA)[JI][A-Z0-9]{14}[AQ][\'"]/g,
+  access_key_id: /(\'A|"A)(SIA|KIA|IDA|ROA)[JI][A-Z0-9]{14}[AQ][\'"]/g,
 };
 ```
 
@@ -101,10 +107,11 @@ Strings matching this expression will be saved under the corresponding key in th
 You also have the option of only capturing results from specified domains. To do this, simply populate the `domains` array with the FQDNs that you wish to include. It is recommended that you leave this empty `[]` since it's almost never worthwhile (the processing effort saved is very small), but it can be useful in some niche cases.
 
 ```javascript
-exports.domains = ["example1.com", "example2.com"];
+exports.domains = ['example1.com', 'example2.com'];
 ```
 
 Once the `matches.js` is populated, run the following command:
+
 ```bash
 warcannon$ warcannon testLocal -s
 ```
@@ -113,7 +120,7 @@ You can optionally add a path to a WARC in the `commoncrawl` S3 bucket if you'd 
 
 WARCannon will stream process the WARC file (or download it entirely if you omit `-s`) to find your configured matches. WARCannon will save the results to the `~/.warcannon/` folder when you interrupt with `ctrl+c` or when the processing finishes. This makes it easy to test common matches very rapidly with minimal bandwidth.
 
-On top of everything else, WARCannon will attempt to evaluate the total compute cost of your regular expressions when run locally. This way, you can be informed if a given regular expression will significantly impact performance *before* you execute your campaign.
+On top of everything else, WARCannon will attempt to evaluate the total compute cost of your regular expressions when run locally. This way, you can be informed if a given regular expression will significantly impact performance _before_ you execute your campaign.
 
 ![Image](http://c6fc.io/warcannon-dev.png)
 
@@ -123,25 +130,26 @@ Sometimes a simple regex pattern isn't sufficient on its own, and you need some 
 
 ```javascript
 exports.regex_patterns = {
-	"access_key_id": /(\'A|"A)(SIA|KIA|IDA|ROA)[JI][A-Z0-9]{14}[AQ][\'"]/g,
+  access_key_id: /(\'A|"A)(SIA|KIA|IDA|ROA)[JI][A-Z0-9]{14}[AQ][\'"]/g,
 };
 
 exports.custom_functions = {
-	"access_key_id": function(match) {
-		// Ignore matches with 'EXAMPLE' in the text, since this is common for documentation.
-		if (match.text(/EXAMPLE/) != null) {
-			// Returning a boolean 'false' discards the match.
-			return false
-		}
-	}
-}
+  access_key_id: function (match) {
+    // Ignore matches with 'EXAMPLE' in the text, since this is common for documentation.
+    if (match.text(/EXAMPLE/) != null) {
+      // Returning a boolean 'false' discards the match.
+      return false;
+    }
+  },
+};
 ```
 
-**Note: WARCannon is meant to crunch through text at stupid speeds.** While it's certainly *possible* to perform any type of operation you'd like, adding high-latency custom functions such as network calls can significantly increase processing time and costs. Network calls could also result in LOTS of calls against a website, which could get you in trouble. Be smart about how you use these functions.
+**Note: WARCannon is meant to crunch through text at stupid speeds.** While it's certainly _possible_ to perform any type of operation you'd like, adding high-latency custom functions such as network calls can significantly increase processing time and costs. Network calls could also result in LOTS of calls against a website, which could get you in trouble. Be smart about how you use these functions.
 
 ### Performing a One-Off Test in AWS
 
 The costs of AWS can be anxiety-inducing, especially when you're only looking to do some research. WARCannon is built to allow both one-off executions in addition to full campaigns, so you can be confident in the results you'll get back. Once you're happy with the results you get with `testLocal`, you can deploy your updated matches and run a cloud-backed test easily:
+
 ```bash
 warcannon$ warcannon deploy
 warcannon$ warcannon test
@@ -158,12 +166,14 @@ Once you're happy with the results you get in Lambda, you're ready to grep the i
 #### Clearing the Queue
 
 WARCannon uses AWS Simple Queue Service to distribute work to the compute nodes. To ensure that your results aren't tainted with any prior runs, you can tell WARCannon to empty the queue:
+
 ```bash
 warcannon$ warcannon emptyQueue
 [+] Cleared [ 15 ] messages from the queue
 ```
 
 You can then verify the state of the queue:
+
 ```bash
 warcannon$ warcannon status
 	Deployed: [ YES ]; SQS Status: [ EMPTY ]
@@ -172,12 +182,14 @@ warcannon$ warcannon status
 ```
 
 Verify the following before proceeding:
+
 1. The SQS Queue is empty
 2. The job status is 'INACTIVE'
 
 #### Populating the Queue (Simple)
 
 In order to create the queue messages that the compute nodes will consume, you must first populate SQS with crawl data. WARCannon has several commands to help with this, starting with the ability to show the available scans. In this case, let's look at the scans available for the year 2021:
+
 ```bash
 warcannon$ warcannon list 2021
 CC-MAIN-2021-04
@@ -244,10 +256,11 @@ warcannon$ warcannon fire
     lasting for [ 86400 ] seconds.
 
 To change this, edit your settings in settings.json and run warcannon deploy
---> Ready to fire? [Yes]: 
+--> Ready to fire? [Yes]:
 ```
 
 Pull the trigger by responding with 'Yes'.
+
 ```bash
 --> Ready to fire? [Yes]: Yes
 {
