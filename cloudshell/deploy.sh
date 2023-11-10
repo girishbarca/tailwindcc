@@ -57,8 +57,8 @@ echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 echo
 echo
 
-sudo npm install > /dev/null
-sudo npm link > /dev/null
+npm install > /dev/null
+npm link > /dev/null
 
 mv settings.json.sample settings.json
 
