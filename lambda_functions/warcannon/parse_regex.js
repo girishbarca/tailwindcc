@@ -150,21 +150,24 @@ exports.main = function (parser) {
         recordStartTime = hrtime();
       }
 
-      for (const key in regex_patterns) {
+      for (const r_key in regex_patterns) {
+        console.log(r_key);
         const record_content = record.content.toString();
         const num_matches = record_content
           .toString()
-          .match(regex_patterns[key]).length;
+          .match(regex_patterns[r_key]).length;
+        console.log(domain);
+        console.log(num_matches);
         if (num_matches > 20) {
           continue;
         }
         metrics.total_hits++;
         const key = hash(domain);
-        metrics.regex_hits[e][key] ??= { record_content };
-        metrics.regex_hits[e][key][domain] ??= [];
+        metrics.regex_hits[r_key][key] ??= { record_content };
+        metrics.regex_hits[r_key][key][domain] ??= [];
 
         let uri = record.warcHeader['WARC-Target-URI'];
-        let uris = metrics.regex_hits[e][key][domain];
+        let uris = metrics.regex_hits[r_key][key][domain];
 
         if (uris.length < 3 && !uris.includes(uri)) {
           uris.push(uri);
